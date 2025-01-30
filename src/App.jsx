@@ -1,5 +1,12 @@
 import { useForm } from 'react-hook-form';
 import './App.css';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+
+const schema = z.object({
+	nameRequired: z.string().min(1, 'This is required.'),
+	nameMinLength: z.string().min(4),
+});
 
 function App() {
 	const { register, handleSubmit, watch, formState } = useForm({
@@ -8,6 +15,7 @@ function App() {
 			nameRequired: '',
 			nameMinLength: 'fsddsfadsf',
 		},
+		resolver: zodResolver(schema),
 	});
 	const { errors, isSubmitting, isSubmitSuccessful } = formState;
 	console.log('✌️isSubmitting --->', isSubmitting);
@@ -15,14 +23,19 @@ function App() {
 	// console.log('✌️errors --->', errors);
 	async function submitHandler(data) {
 		// console.log('✌️data --->', data);
-		await new Promise((resolve) => setTimeout(resolve, 2000));
+		await new Promise((resolve) => setTimeout(resolve, 1000));
 		// throw new Error('adsf');
 	}
 	return (
 		<>
 			<form onSubmit={handleSubmit(submitHandler)}>
 				<label>
-					Name Required: <input {...register('nameRequired', { required: 'This is required.' })} />
+					Name Required:{' '}
+					<input
+						{...register('nameRequired', {
+							// required: 'This is required.',
+						})}
+					/>
 				</label>
 				<p>{errors.nameRequired?.message}</p>
 				<label>
@@ -30,7 +43,7 @@ function App() {
 					<input
 						{...register('nameMinLength', {
 							required: 'This is required',
-							minLength: { value: 4, message: 'At least 4 characters required.' },
+							// minLength: { value: 4, message: 'At least 4 characters required.' },
 						})}
 					/>
 				</label>
