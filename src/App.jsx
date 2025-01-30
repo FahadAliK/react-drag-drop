@@ -12,6 +12,7 @@ function Item({ id }) {
 function App() {
 	const initialState = [{ id: 1 }, { id: 1 }, { id: 1 }, { id: 2 }];
 	const [items, setItems] = useState(initialState);
+	const ref = useRef();
 	function dropHandler(e) {
 		const data = JSON.parse(e.dataTransfer.getData('text'));
 		if (parseInt(e.target.id) !== data.id) {
@@ -26,10 +27,14 @@ function App() {
 	}
 	function dragEnterHandler(e) {
 		e.preventDefault();
+		ref.current.style.backgroundColor = 'red';
+	}
+	function dragLeaveHandler(e) {
+		ref.current.style.backgroundColor = 'white';
 	}
 	return (
 		<div className="container">
-			<section id="1" className="section" onDrop={dropHandler} onDragOver={dragOverHandler} onDragEnter={dragEnterHandler}>
+			<section id="1" className="section" onDrop={dropHandler} onDragOver={dragOverHandler} onDragEnter={dragEnterHandler} ref={ref} onDragLeave={dragLeaveHandler}>
 				{items.map((i) => (i.id === 1 ? <Item key={Math.random()} id={i.id} /> : null))}
 			</section>
 			<section id="2" className="section" onDrop={dropHandler} onDragOver={dragOverHandler} onDragEnter={dragEnterHandler}>
