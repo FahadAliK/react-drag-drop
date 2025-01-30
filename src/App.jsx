@@ -2,22 +2,21 @@ import { useForm } from 'react-hook-form';
 import './App.css';
 
 function App() {
-	const {
-		register,
-		handleSubmit,
-		watch,
-		formState: { errors },
-	} = useForm({
-		mode: 'onChange',
+	const { register, handleSubmit, watch, formState } = useForm({
+		mode: 'all',
 		defaultValues: {
-			nameRequired: 'fa',
+			nameRequired: '',
 			nameMinLength: 'fsddsfadsf',
 		},
 	});
-
-	console.log('✌️errors --->', errors);
-	function submitHandler(data) {
-		console.log('✌️data --->', data);
+	const { errors, isSubmitting, isSubmitSuccessful } = formState;
+	console.log('✌️isSubmitting --->', isSubmitting);
+	console.log(formState);
+	// console.log('✌️errors --->', errors);
+	async function submitHandler(data) {
+		// console.log('✌️data --->', data);
+		await new Promise((resolve) => setTimeout(resolve, 2000));
+		// throw new Error('adsf');
 	}
 	return (
 		<>
@@ -37,8 +36,9 @@ function App() {
 				</label>
 				<p>{errors.nameMinLength?.message}</p>
 				<button type="submit" disabled={Object.entries(errors).length}>
-					Submit
+					{isSubmitting ? 'loading...' : 'Submit'}
 				</button>
+				{isSubmitSuccessful && <p>Success</p>}
 			</form>
 		</>
 	);
