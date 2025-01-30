@@ -40,19 +40,3 @@
 .read-the-docs {
   color: #888;
 } */
-
-.container {
-	display: flex;
-}
-
-.section {
-	border: 1px solid red;
-	width: 50%;
-}
-
-.item {
-	height: 50px;
-	width: 100px;
-	margin: 10px;
-	border: 1px solid black;
-}

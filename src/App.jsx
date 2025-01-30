@@ -1,46 +1,46 @@
-import { useEffect, useRef, useState } from 'react';
+import { useForm } from 'react-hook-form';
 import './App.css';
 
-function Item({ id }) {
-	function dragStartHandler(e) {
-		e.dataTransfer.setData('text/plain', JSON.stringify({ id }));
-		e.dataTransfer.dropEffect = 'move';
-	}
-	return <div className="item" draggable onDragStart={dragStartHandler}></div>;
-}
-
 function App() {
-	const initialState = [{ id: 1 }, { id: 1 }, { id: 1 }, { id: 2 }];
-	const [items, setItems] = useState(initialState);
-	const ref = useRef();
-	function dropHandler(e) {
-		const data = JSON.parse(e.dataTransfer.getData('text'));
-		if (parseInt(e.target.id) !== data.id) {
-			const itemsCopy = [...items];
-			const findIndex = itemsCopy.findIndex((i) => i.id === data.id);
-			itemsCopy[findIndex].id = parseInt(e.target.id);
-			setItems(itemsCopy);
-		}
-	}
-	function dragOverHandler(e) {
-		e.preventDefault();
-	}
-	function dragEnterHandler(e) {
-		e.preventDefault();
-		ref.current.style.backgroundColor = 'red';
-	}
-	function dragLeaveHandler(e) {
-		ref.current.style.backgroundColor = 'white';
+	const {
+		register,
+		handleSubmit,
+		watch,
+		formState: { errors },
+	} = useForm({
+		mode: 'onChange',
+		defaultValues: {
+			nameRequired: 'fa',
+			nameMinLength: 'fsddsfadsf',
+		},
+	});
+
+	console.log('✌️errors --->', errors);
+	function submitHandler(data) {
+		console.log('✌️data --->', data);
 	}
 	return (
-		<div className="container">
-			<section id="1" className="section" onDrop={dropHandler} onDragOver={dragOverHandler} onDragEnter={dragEnterHandler} ref={ref} onDragLeave={dragLeaveHandler}>
-				{items.map((i) => (i.id === 1 ? <Item key={Math.random()} id={i.id} /> : null))}
-			</section>
-			<section id="2" className="section" onDrop={dropHandler} onDragOver={dragOverHandler} onDragEnter={dragEnterHandler}>
-				{items.map((i) => (i.id === 2 ? <Item key={Math.random()} id={i.id} /> : null))}
-			</section>
-		</div>
+		<>
+			<form onSubmit={handleSubmit(submitHandler)}>
+				<label>
+					Name Required: <input {...register('nameRequired', { required: 'This is required.' })} />
+				</label>
+				<p>{errors.nameRequired?.message}</p>
+				<label>
+					Name Min Length:{' '}
+					<input
+						{...register('nameMinLength', {
+							required: 'This is required',
+							minLength: { value: 4, message: 'At least 4 characters required.' },
+						})}
+					/>
+				</label>
+				<p>{errors.nameMinLength?.message}</p>
+				<button type="submit" disabled={Object.entries(errors).length}>
+					Submit
+				</button>
+			</form>
+		</>
 	);
 }
 
